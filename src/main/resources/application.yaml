@@ -1,0 +1,21 @@
+spring:
+    datasource:
+        url: ${DB_URL}
+        username: ${DB_USER}
+        password: ${DB_PWD}
+    jpa:
+        database: postgresql
+        generate-ddl: true
+    sql:
+        init:
+            mode: always
+
+    application:
+        name: music-bands-service
+
+springdoc:
+    swagger-ui:
+        disable-swagger-default-url: true
+        path: /docs
+    default-produces-media-type: "application/json"
+    default-consumes-media-type: "application/json"
