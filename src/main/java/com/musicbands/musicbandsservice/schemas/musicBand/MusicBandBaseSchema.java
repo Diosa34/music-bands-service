@@ -11,13 +11,13 @@ public class MusicBandBaseSchema {
     @NotBlank
     @NotNull
     @Size(min = 1)
-    protected String name;
+    private String name;
 
     @Schema(example = "Description of my lovely music band")
-    protected String description;
+    private String description;
 
     @Schema(example = "ROCK")
     @NotNull
-    protected MusicGenre genre;
+    private MusicGenre genre;
 }
 

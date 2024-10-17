@@ -4,10 +4,14 @@ import com.musicbands.musicbandsservice.exceptions.NotFoundException;
 import com.musicbands.musicbandsservice.mappers.MusicBandMapper;
 import com.musicbands.musicbandsservice.models.MusicBand;
 import com.musicbands.musicbandsservice.repositories.MusicBandRepository;
+import com.musicbands.musicbandsservice.schemas.GroupSchema;
+import com.musicbands.musicbandsservice.schemas.StatisticSchema;
 import com.musicbands.musicbandsservice.schemas.musicBand.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -47,5 +51,24 @@ public class MusicBandService {
                 () -> new NotFoundException(id, "Музыкальная группа")
         );
         musicBandRepository.delete(musicBand);
+    }
+
+    public StatisticSchema getStatistic() {
+        return new StatisticSchema(musicBandRepository.findAll().stream()
+                .mapToLong(MusicBand::getNumberOfParticipants) // Извлекаем цены
+                .sum());
+    }
+
+    public List<GroupSchema> getGroups() {
+        Map<String, Long> map = musicBandRepository.findAll().stream()
+                .collect(
+                        Collectors.groupingBy(
+                                MusicBand::getName, Collectors.counting()
+                        )
+                );
+        return map.entrySet()
+                .stream()
+                .map(entry -> new GroupSchema(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
     }
 }

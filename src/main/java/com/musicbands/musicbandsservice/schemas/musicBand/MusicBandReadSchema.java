@@ -20,7 +20,7 @@ public class MusicBandReadSchema extends MusicBandBaseSchema{
 
     @Schema(example = "70")
     @Positive
-    protected Long numberOfParticipants;
+    private Long numberOfParticipants;
 
     @Schema(example = "2022-09-19T00:00:10Z")
     @NotNull

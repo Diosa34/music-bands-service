@@ -1,5 +1,7 @@
 package com.musicbands.musicbandsservice.controllers;
 
+import com.musicbands.musicbandsservice.schemas.GroupSchema;
+import com.musicbands.musicbandsservice.schemas.StatisticSchema;
 import com.musicbands.musicbandsservice.schemas.musicBand.*;
 import com.musicbands.musicbandsservice.services.MusicBandService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -59,5 +62,21 @@ public class MusicBandController {
     @DeleteMapping("/{id}")
     public void deleteMusicBand(@PathVariable Long id) {
         musicBandService.delete(id);
+    }
+
+    @Operation(
+            summary = "Получить среднее количество участников для всех музыкальных групп"
+    )
+    @GetMapping("/statistic")
+    public StatisticSchema getStatistic() {
+        return musicBandService.getStatistic();
+    }
+
+    @Operation(
+            summary = "Получите количество повторений для каждого значения имени"
+    )
+    @GetMapping("/groups")
+    public List<GroupSchema> getGroups() {
+        return musicBandService.getGroups();
     }
 }
