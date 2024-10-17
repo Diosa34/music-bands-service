@@ -1,5 +1,6 @@
 package com.musicbands.musicbandsservice.services;
 
+import com.musicbands.musicbandsservice.exceptions.NotFoundException;
 import com.musicbands.musicbandsservice.mappers.MusicBandMapper;
 import com.musicbands.musicbandsservice.models.MusicBand;
 import com.musicbands.musicbandsservice.repositories.MusicBandRepository;
@@ -26,5 +27,25 @@ public class MusicBandService {
         MusicBand model = musicBandMapper.mapMusicBandXMLToEntity(schema);
         model = musicBandRepository.save(model);
         return musicBandMapper.mapEntityToMusicBandRead(model);
+    }
+
+    public MusicBandReadSchema getById(Long id) {
+        MusicBand musicBand = musicBandRepository.findById(id).orElseThrow(
+                () -> new NotFoundException(id, "Музыкальная группа")
+        );
+        return musicBandMapper.mapEntityToMusicBandRead(musicBand);
+    }
+
+    public MusicBandReadSchema update(Long id, MusicBandXMLSchema schema) {
+        MusicBand model = musicBandMapper.mapMusicBandUpdateToEntity(id, schema);
+        model = musicBandRepository.save(model);
+        return musicBandMapper.mapEntityToMusicBandRead(model);
+    }
+
+    public void delete(Long id) {
+        MusicBand musicBand = musicBandRepository.findById(id).orElseThrow(
+                () -> new NotFoundException(id, "Музыкальная группа")
+        );
+        musicBandRepository.delete(musicBand);
     }
 }

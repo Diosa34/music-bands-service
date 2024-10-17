@@ -36,4 +36,28 @@ public class MusicBandController {
     public MusicBandReadSchema addMusicBand(@RequestBody @Valid MusicBandXMLSchema schema) {
         return musicBandService.add(schema);
     }
+
+    @Operation(
+            summary = "Получить музыкальную группу по ID.",
+            description = "Возвращает информацию о музыкальной группе"
+    )
+    @GetMapping("/{id}")
+    public MusicBandReadSchema getMusicBand(@PathVariable Long id) {
+        return musicBandService.getById(id);
+    }
+
+    @Operation(
+            summary = "Обновить музыкальную группу",
+            description = "Обновляет информацию о музыкальной группе"
+    )
+    @PutMapping("/{id}")
+    public MusicBandReadSchema updateMusicBand(@PathVariable Long id, @RequestBody @Valid MusicBandXMLSchema schema) {
+        return musicBandService.update(id, schema);
+    }
+
+    @Operation(summary = "Удаляет музыкальную группу")
+    @DeleteMapping("/{id}")
+    public void deleteMusicBand(@PathVariable Long id) {
+        musicBandService.delete(id);
+    }
 }

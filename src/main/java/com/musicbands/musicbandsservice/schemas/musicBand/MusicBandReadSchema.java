@@ -4,6 +4,7 @@ import com.musicbands.musicbandsservice.schemas.coordinates.CoordinatesReadSchem
 import com.musicbands.musicbandsservice.schemas.label.LabelReadSchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -16,6 +17,10 @@ public class MusicBandReadSchema extends MusicBandBaseSchema{
     private Long id;
 
     private CoordinatesReadSchema coordinates;
+
+    @Schema(example = "70")
+    @Positive
+    protected Long numberOfParticipants;
 
     @Schema(example = "2022-09-19T00:00:10Z")
     @NotNull

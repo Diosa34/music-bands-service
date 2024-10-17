@@ -6,6 +6,7 @@ import com.musicbands.musicbandsservice.models.Label;
 import com.musicbands.musicbandsservice.models.MusicBand;
 import com.musicbands.musicbandsservice.repositories.CoordinatesRepository;
 import com.musicbands.musicbandsservice.repositories.LabelRepository;
+import com.musicbands.musicbandsservice.repositories.MusicBandRepository;
 import com.musicbands.musicbandsservice.schemas.musicBand.MusicBandReadSchema;
 import com.musicbands.musicbandsservice.schemas.musicBand.MusicBandXMLSchema;
 import jakarta.validation.ValidationException;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 public class MusicBandMapper {
     private final CoordinatesMapper coordinatesMapper;
     private final LabelMapper labelMapper;
+    private final MusicBandRepository musicBandRepository;
     private final CoordinatesRepository coordinatesRepository;
     private final LabelRepository labelRepository;
 
@@ -37,26 +39,30 @@ public class MusicBandMapper {
     }
 
     public MusicBand mapMusicBandXMLToEntity(MusicBandXMLSchema xmlSchema) throws NotFoundException {
-        MusicBand schema = new MusicBand();
-        schema.setName(xmlSchema.getName());
-        schema.setCoordinates(coordCheck(xmlSchema));
-        schema.setNumberOfParticipants(xmlSchema.getNumberOfParticipants());
-        schema.setDescription(xmlSchema.getDescription());
-        schema.setGenre(xmlSchema.getGenre());
-        schema.setLabel(labelCheck(xmlSchema));
-        return schema;
+        MusicBand entity = new MusicBand();
+        return mapSchemaFieldsToEntity(entity, xmlSchema);
     }
 
-    private Coordinates coordCheck(MusicBandXMLSchema xmlSchema) {
+    public MusicBand mapMusicBandUpdateToEntity(Long id, MusicBandXMLSchema xmlSchema) {
+        MusicBand entity = musicBandRepository.getReferenceById(id);
+        return mapSchemaFieldsToEntity(entity, xmlSchema);
+    }
+
+    public MusicBand mapSchemaFieldsToEntity(MusicBand entity, MusicBandXMLSchema xmlSchema) {
+        entity.setName(xmlSchema.getName());
+        entity.setCoordinates(coordCheck(xmlSchema.getCoordinatesID(), xmlSchema.getX(), xmlSchema.getY()));
+        entity.setDescription(xmlSchema.getDescription());
+        entity.setGenre(xmlSchema.getGenre());
+        entity.setLabel(labelCheck(xmlSchema.getLabelId(), xmlSchema.getLabelName()));
+        return entity;
+    }
+
+    private Coordinates coordCheck(Long id, Double x, Long y) {
         Coordinates coord;
 
-        Long coordID = xmlSchema.getCoordinatesID();
-        Double x = xmlSchema.getX();
-        Long y = xmlSchema.getY();
-
-        if (coordID != null) {
-            coord = coordinatesRepository.findById(coordID)
-                    .orElseThrow(() -> new NotFoundException(coordID, "Coordinates не найдены"));
+        if (id != null) {
+            coord = coordinatesRepository.findById(id)
+                    .orElseThrow(() -> new NotFoundException(id, "Coordinates не найдены"));
         } else if (x != null && y != null) {
             coord = new Coordinates();
             coord.setX(x);
@@ -68,10 +74,8 @@ public class MusicBandMapper {
         return coord;
     }
 
-    private Label labelCheck(MusicBandXMLSchema xmlSchema) {
+    private Label labelCheck(Long labelID, String labelName) {
         Label label;
-        Long labelID = xmlSchema.getLabelId();
-        String labelName = xmlSchema.getLabelName();
 
         if (labelID != null) {
             label = labelRepository.findById(labelID)

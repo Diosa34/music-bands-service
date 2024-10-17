@@ -38,7 +38,7 @@ public class MusicBand {
 
     @Positive
     @Column
-    private Long numberOfParticipants;
+    private Long numberOfParticipants = 0L;
 
     @Column
     private String description;
@@ -52,5 +52,5 @@ public class MusicBand {
     private Label label;
 
     @OneToMany(mappedBy = "musicBand")
-    private List<Single> singls = new ArrayList<>();
+    private List<Single> singles = new ArrayList<>();
 }
