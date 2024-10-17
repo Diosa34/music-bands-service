@@ -1,8 +1,9 @@
 package com.musicbands.musicbandsservice.services;
 
 import com.musicbands.musicbandsservice.mappers.MusicBandMapper;
+import com.musicbands.musicbandsservice.models.MusicBand;
 import com.musicbands.musicbandsservice.repositories.MusicBandRepository;
-import com.musicbands.musicbandsservice.schemas.musicBand.MusicBandReadSchema;
+import com.musicbands.musicbandsservice.schemas.musicBand.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,5 +20,11 @@ public class MusicBandService {
         return musicBandRepository.findAll().stream()
                 .map(musicBandMapper::mapEntityToMusicBandRead)
                 .collect(Collectors.toSet());
+    }
+
+    public MusicBandReadSchema add(MusicBandXMLSchema schema) {
+        MusicBand model = musicBandMapper.mapMusicBandXMLToEntity(schema);
+        model = musicBandRepository.save(model);
+        return musicBandMapper.mapEntityToMusicBandRead(model);
     }
 }

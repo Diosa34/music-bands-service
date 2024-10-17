@@ -1,7 +1,7 @@
 package com.musicbands.musicbandsservice.schemas.musicBand;
 
 import com.musicbands.musicbandsservice.schemas.coordinates.CoordinatesReadSchema;
-import com.musicbands.musicbandsservice.schemas.single.LabelReadSchema;
+import com.musicbands.musicbandsservice.schemas.label.LabelReadSchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

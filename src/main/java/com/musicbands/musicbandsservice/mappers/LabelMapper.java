@@ -1,7 +1,7 @@
 package com.musicbands.musicbandsservice.mappers;
 
 import com.musicbands.musicbandsservice.models.Label;
-import com.musicbands.musicbandsservice.schemas.single.LabelReadSchema;
+import com.musicbands.musicbandsservice.schemas.label.LabelReadSchema;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

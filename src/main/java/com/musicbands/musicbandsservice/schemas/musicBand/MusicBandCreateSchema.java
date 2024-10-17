@@ -1,20 +1,17 @@
 package com.musicbands.musicbandsservice.schemas.musicBand;
 
+import com.musicbands.musicbandsservice.models.Coordinates;
+import com.musicbands.musicbandsservice.models.Label;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class MusicBandCreateSchema extends MusicBandBaseSchema{
-    @Schema(description = "Координаты", example = "1")
-    @NotNull
-    @Positive
-    private Long coordinatesId;
+    @Schema(description = "Coordinates, полученные из БД")
+    private Coordinates coordinates;
 
-    @Schema(description = "National", example = "1")
-    @Positive
-    private Long labelId;
+   @Schema(description = "Label, полученная из БД")
+    private Label label;
 }
