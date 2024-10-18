@@ -10,8 +10,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @Entity
@@ -50,7 +48,4 @@ public class MusicBand {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "label_id")
     private Label label;
-
-    @OneToMany(mappedBy = "musicBand")
-    private List<Single> singles = new ArrayList<>();
 }
