@@ -19,3 +19,15 @@ springdoc:
         path: /docs
     default-produces-media-type: "application/json"
     default-consumes-media-type: "application/json"
+
+server:
+    port: 8443
+    ssl:
+        key-store-type: *
+        key-alias: *
+        key-store: *
+        key-store-password: *
+        key-password: *
+        enabled: true
+
+
