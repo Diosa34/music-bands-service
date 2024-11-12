@@ -36,7 +36,7 @@ public class MusicBand {
 
     @Positive
     @Column
-    private Long numberOfParticipants = 0L;
+    private Long numberOfParticipants;
 
     @Column
     private String description;

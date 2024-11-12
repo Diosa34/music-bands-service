@@ -23,11 +23,13 @@ springdoc:
 server:
     port: 8443
     ssl:
-        key-store-type: *
+        key-store-type: JKS
         key-alias: *
         key-store: *
         key-store-password: *
         key-password: *
         enabled: true
+        trust-store: *
+        trust-store-password: *
 
 
