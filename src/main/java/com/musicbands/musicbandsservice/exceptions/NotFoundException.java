@@ -1,12 +1,16 @@
 package com.musicbands.musicbandsservice.exceptions;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
 @Getter
 public class NotFoundException extends Error {
-    private Object entityId;
-    private String entityName;
+    private final Long entityID;
+    private final String entityName;
+    private final Integer code = 404;
+
+    public NotFoundException(Long entityID, String entityName) {
+        this.entityID = entityID;
+        this.entityName = entityName;
+    }
 }
 
