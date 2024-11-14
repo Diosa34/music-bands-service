@@ -5,6 +5,5 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class LabelReadSchema extends LabelBaseSchema {
-    private Long id;
+public class LabelUpdateSchema extends LabelBaseSchema {
 }

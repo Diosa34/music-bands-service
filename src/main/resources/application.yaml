@@ -6,6 +6,9 @@ spring:
     jpa:
         database: postgresql
         generate-ddl: true
+        properties:
+            hibernate:
+                default_schema: "music_bands_service"
     sql:
         init:
             mode: always

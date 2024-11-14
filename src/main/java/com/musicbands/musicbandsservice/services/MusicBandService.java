@@ -1,54 +1,70 @@
 package com.musicbands.musicbandsservice.services;
 
-import com.musicbands.musicbandsservice.exceptions.NotFoundException;
-import com.musicbands.musicbandsservice.mappers.MusicBandMapper;
 import com.musicbands.musicbandsservice.models.MusicBand;
+import com.musicbands.musicbandsservice.repositories.CoordinatesRepository;
+import com.musicbands.musicbandsservice.repositories.LabelRepository;
 import com.musicbands.musicbandsservice.repositories.MusicBandRepository;
 import com.musicbands.musicbandsservice.schemas.GroupSchema;
 import com.musicbands.musicbandsservice.schemas.StatisticSchema;
-import com.musicbands.musicbandsservice.schemas.musicBand.*;
-import lombok.RequiredArgsConstructor;
+import com.musicbands.musicbandsservice.schemas.lists.ListWithPaginatorSchema;
+import com.musicbands.musicbandsservice.schemas.musicBand.MusicBandCreateSchema;
+import com.musicbands.musicbandsservice.schemas.musicBand.MusicBandReadSchema;
+import com.musicbands.musicbandsservice.schemas.musicBand.MusicBandUpdateSchema;
+import com.musicbands.musicbandsservice.services.mappers.MusicBandMapper;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class MusicBandService {
-    private final MusicBandRepository musicBandRepository;
     private final MusicBandMapper musicBandMapper;
+    private final MusicBandRepository musicBandRepository;
+    private final CoordinatesRepository coordinatesRepository;
+    private final LabelRepository labelRepository;
 
-    public Set<MusicBandReadSchema> getAll() {
-        return musicBandRepository.findAll().stream()
-                .map(musicBandMapper::mapEntityToMusicBandRead)
-                .collect(Collectors.toSet());
+    public ListWithPaginatorSchema<MusicBandReadSchema> filterMusicBand() { // todo: refactor
+        ListWithPaginatorSchema<MusicBandReadSchema> paginatorSchema = new ListWithPaginatorSchema<>();
+        paginatorSchema.setElements(
+                musicBandRepository.findAll().stream()
+                        .map(musicBandMapper::mapEntityToMusicBandRead)
+                        .collect(Collectors.toList())
+        );
+        return paginatorSchema;
     }
 
-    public MusicBandReadSchema add(MusicBandXMLSchema schema) {
-        MusicBand model = musicBandMapper.mapMusicBandXMLToEntity(schema);
-        model = musicBandRepository.save(model);
-        return musicBandMapper.mapEntityToMusicBandRead(model);
+    public MusicBandReadSchema createMusicBand(MusicBandCreateSchema schema) {
+        MusicBand musicBand = musicBandMapper.mapMusicBandCreateToEntity(schema);
+        labelRepository.save(musicBand.getLabel());
+        coordinatesRepository.save(musicBand.getCoordinates());
+        musicBand = musicBandRepository.save(musicBand); // todo: check saving
+        return musicBandMapper.mapEntityToMusicBandRead(musicBand);
     }
 
-    public MusicBandReadSchema getById(Long id) {
-        MusicBand musicBand = musicBandRepository.findById(id).orElseThrow(
-                () -> new NotFoundException(id, "Музыкальная группа")
+    public MusicBandReadSchema getMusicBand(Long musicBandId) {
+        MusicBand musicBand = musicBandRepository.findById(musicBandId).orElseThrow(
+                () -> new RuntimeException("d") // todo: exception
         );
         return musicBandMapper.mapEntityToMusicBandRead(musicBand);
     }
 
-    public MusicBandReadSchema update(Long id, MusicBandXMLSchema schema) {
-        MusicBand model = musicBandMapper.mapMusicBandUpdateToEntity(id, schema);
-        model = musicBandRepository.save(model);
-        return musicBandMapper.mapEntityToMusicBandRead(model);
+    public MusicBandReadSchema updateMusicBand(Long musicBandId, MusicBandUpdateSchema schema) {
+        MusicBand musicBand = musicBandRepository.findById(musicBandId).orElseThrow(
+                () -> new RuntimeException("d") // todo: exception
+        );
+        musicBandMapper.mapMusicBandUpdateToEntity(schema, musicBand);
+        labelRepository.save(musicBand.getLabel());
+        coordinatesRepository.save(musicBand.getCoordinates());
+        musicBand = musicBandRepository.save(musicBand);
+        return musicBandMapper.mapEntityToMusicBandRead(musicBand);
     }
 
-    public void delete(Long id) {
-        MusicBand musicBand = musicBandRepository.findById(id).orElseThrow(
-                () -> new NotFoundException(id, "Музыкальная группа")
+    public void deleteMusicBand(Long musicBandId) {
+        MusicBand musicBand = musicBandRepository.findById(musicBandId).orElseThrow(
+                () -> new RuntimeException("d") // todo: exception
         );
         musicBandRepository.delete(musicBand);
     }

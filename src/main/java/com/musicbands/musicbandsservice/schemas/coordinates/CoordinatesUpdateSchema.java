@@ -2,8 +2,11 @@ package com.musicbands.musicbandsservice.schemas.coordinates;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class CoordinatesCreateSchema extends CoordinatesBaseSchema {
+@NoArgsConstructor
+public class CoordinatesUpdateSchema extends CoordinatesBaseSchema {
 }

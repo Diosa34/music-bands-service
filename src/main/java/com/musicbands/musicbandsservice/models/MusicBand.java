@@ -1,9 +1,6 @@
 package com.musicbands.musicbandsservice.models;
 
-import jakarta.persistence.Entity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,23 +15,16 @@ import java.time.ZonedDateTime;
 @AllArgsConstructor
 public class MusicBand {
     @Id
-    @GeneratedValue
-    @Positive
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
     @Column(nullable = false)
     private String name;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "coordinates_id", nullable = false)
-    private Coordinates coordinates;
 
     @Convert(converter = ZonedDateTimeAttributeConverter.class)
     @Column(nullable = false)
     private ZonedDateTime creationDate = ZonedDateTime.now();
 
-    @Positive
     @Column
     private Long numberOfParticipants;
 
@@ -45,7 +35,12 @@ public class MusicBand {
     @Column(nullable = false)
     private MusicGenre genre;
 
+
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "label_id")
+    @JoinColumn(name = "coordinates_id", nullable = false)
+    private Coordinates coordinates;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "label_id", nullable = false)
     private Label label;
 }

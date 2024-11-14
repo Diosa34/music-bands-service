@@ -7,12 +7,14 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.time.ZonedDateTime;
 
-@Data
 @EqualsAndHashCode(callSuper = true)
-public class MusicBandReadSchema extends MusicBandBaseSchema{
+@Data
+@NoArgsConstructor
+public class MusicBandReadSchema extends MusicBandBaseSchema {
     @Schema(example = "1")
     private Long id;
 

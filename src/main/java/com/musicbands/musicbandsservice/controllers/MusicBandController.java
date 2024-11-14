@@ -6,7 +6,10 @@ import com.musicbands.musicbandsservice.exceptions.schemas.ObjectNotFoundSchema;
 import com.musicbands.musicbandsservice.exceptions.schemas.ValidationExceptionSchema;
 import com.musicbands.musicbandsservice.schemas.GroupSchema;
 import com.musicbands.musicbandsservice.schemas.StatisticSchema;
-import com.musicbands.musicbandsservice.schemas.musicBand.*;
+import com.musicbands.musicbandsservice.schemas.lists.ListWithPaginatorSchema;
+import com.musicbands.musicbandsservice.schemas.musicBand.MusicBandCreateSchema;
+import com.musicbands.musicbandsservice.schemas.musicBand.MusicBandReadSchema;
+import com.musicbands.musicbandsservice.schemas.musicBand.MusicBandUpdateSchema;
 import com.musicbands.musicbandsservice.services.MusicBandService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -14,7 +17,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,8 +26,8 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
-@RequiredArgsConstructor
-@RequestMapping("/music-bands")
+@AllArgsConstructor
+@RequestMapping(path = "/music-bands", produces = MediaType.APPLICATION_XML_VALUE)
 @Validated
 public class MusicBandController {
     private final MusicBandService musicBandService;
@@ -36,8 +40,8 @@ public class MusicBandController {
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = InternalServerErrorSchema.class)))
     })
     @GetMapping
-    public Set<MusicBandReadSchema> getMusicBandList() {
-        return musicBandService.getAll();
+    public ListWithPaginatorSchema<MusicBandReadSchema> filterMusicBand() {
+        return musicBandService.filterMusicBand();
     }
 
     @Operation(
@@ -53,9 +57,9 @@ public class MusicBandController {
             @ApiResponse(responseCode = "422", description = "Validation error", content = @Content(schema = @Schema(implementation = ValidationExceptionSchema.class))),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = InternalServerErrorSchema.class)))
     })
-    @PostMapping
-    public MusicBandReadSchema addMusicBand(@RequestBody @Valid MusicBandXMLSchema schema) {
-        return musicBandService.add(schema);
+    @PostMapping(consumes = MediaType.APPLICATION_XML_VALUE)
+    public MusicBandReadSchema addMusicBand(@RequestBody @Valid MusicBandCreateSchema schema) {
+        return musicBandService.createMusicBand(schema);
     }
 
     @Operation(
@@ -70,7 +74,7 @@ public class MusicBandController {
     })
     @GetMapping("/{id}")
     public MusicBandReadSchema getMusicBand(@PathVariable Long id) {
-        return musicBandService.getById(id);
+        return musicBandService.getMusicBand(id);
     }
 
     @Operation(
@@ -84,9 +88,9 @@ public class MusicBandController {
             @ApiResponse(responseCode = "422", description = "Validation error", content = @Content(schema = @Schema(implementation = ValidationExceptionSchema.class))),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = InternalServerErrorSchema.class)))
     })
-    @PutMapping("/{id}")
-    public MusicBandReadSchema updateMusicBand(@PathVariable Long id, @RequestBody @Valid MusicBandXMLSchema schema) {
-        return musicBandService.update(id, schema);
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_XML_VALUE)
+    public MusicBandReadSchema updateMusicBand(@PathVariable Long id, @RequestBody @Valid MusicBandUpdateSchema schema) {
+        return musicBandService.updateMusicBand(id, schema);
     }
 
     @Operation(summary = "Удаляет музыкальную группу")
@@ -99,7 +103,7 @@ public class MusicBandController {
     })
     @DeleteMapping("/{id}")
     public void deleteMusicBand(@PathVariable Long id) {
-        musicBandService.delete(id);
+        musicBandService.deleteMusicBand(id);
     }
 
     @Operation(

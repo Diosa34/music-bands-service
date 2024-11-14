@@ -1,9 +1,7 @@
 package com.musicbands.musicbandsservice.models;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,17 +10,15 @@ import java.util.List;
 
 @Data
 @Entity
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Coordinates {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Min(-530)
     @Column(nullable = false)
-    private double x;
+    private Double x;
 
     @Column(nullable = false)
     private Long y;
