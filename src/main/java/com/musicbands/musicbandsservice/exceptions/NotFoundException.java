@@ -12,5 +12,9 @@ public class NotFoundException extends Error {
         this.entityID = entityID;
         this.entityName = entityName;
     }
+
+    public String getMessage() {
+        return String.format("Объект \"%s\" с идентификатором %d не найден.", entityName, entityID);
+    }
 }
 

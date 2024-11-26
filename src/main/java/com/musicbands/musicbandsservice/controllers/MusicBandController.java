@@ -1,11 +1,9 @@
 package com.musicbands.musicbandsservice.controllers;
 
-import com.musicbands.musicbandsservice.exceptions.schemas.BadRequestSchema;
-import com.musicbands.musicbandsservice.exceptions.schemas.InternalServerErrorSchema;
-import com.musicbands.musicbandsservice.exceptions.schemas.ObjectNotFoundSchema;
-import com.musicbands.musicbandsservice.exceptions.schemas.ValidationExceptionSchema;
 import com.musicbands.musicbandsservice.schemas.GroupSchema;
 import com.musicbands.musicbandsservice.schemas.StatisticSchema;
+import com.musicbands.musicbandsservice.schemas.exceptions.Http404Schema;
+import com.musicbands.musicbandsservice.schemas.exceptions.Http422Schema;
 import com.musicbands.musicbandsservice.schemas.lists.ListWithPaginatorSchema;
 import com.musicbands.musicbandsservice.schemas.musicBand.MusicBandCreateSchema;
 import com.musicbands.musicbandsservice.schemas.musicBand.MusicBandReadSchema;
@@ -16,15 +14,17 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 
+@Tag(name = "Музыкальные группы (Music Bands)")
 @RestController
 @AllArgsConstructor
 @RequestMapping(path = "/music-bands", produces = MediaType.APPLICATION_XML_VALUE)
@@ -33,12 +33,7 @@ public class MusicBandController {
     private final MusicBandService musicBandService;
 
     @Operation(summary = "Список музыкальных групп")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful response"),
-            @ApiResponse(responseCode = "400", description = "Invalid query param", content = @Content(schema = @Schema(implementation = BadRequestSchema.class))),
-            @ApiResponse(responseCode = "422", description = "Validation error", content = @Content(schema = @Schema(implementation = ValidationExceptionSchema.class))),
-            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = InternalServerErrorSchema.class)))
-    })
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping
     public ListWithPaginatorSchema<MusicBandReadSchema> filterMusicBand() {
         return musicBandService.filterMusicBand();
@@ -52,26 +47,23 @@ public class MusicBandController {
                     " необходимо указать значения x, y, labelName."
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Returns the music band that was just added"),
-            @ApiResponse(responseCode = "400", description = "Invalid query param", content = @Content(schema = @Schema(implementation = BadRequestSchema.class))),
-            @ApiResponse(responseCode = "422", description = "Validation error", content = @Content(schema = @Schema(implementation = ValidationExceptionSchema.class))),
-            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = InternalServerErrorSchema.class)))
+            @ApiResponse(responseCode = "404", description = "Объект не найден", content = @Content(schema = @Schema(implementation = Http404Schema.class))),
+            @ApiResponse(responseCode = "422", description = "Валидационная ошибка", content = @Content(schema = @Schema(implementation = Http422Schema.class))),
     })
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = MediaType.APPLICATION_XML_VALUE)
     public MusicBandReadSchema addMusicBand(@RequestBody @Valid MusicBandCreateSchema schema) {
         return musicBandService.createMusicBand(schema);
     }
 
     @Operation(
-            summary = "Получить музыкальную группу по ID.",
-            description = "Возвращает информацию о музыкальной группе"
+            summary = "Получить музыкальную группу",
+            description = "Возвращает информацию о музыкальной группе по ID."
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Returns music band by id"),
-            @ApiResponse(responseCode = "400", description = "Invalid query param", content = @Content(schema = @Schema(implementation = BadRequestSchema.class))),
-            @ApiResponse(responseCode = "422", description = "Validation error", content = @Content(schema = @Schema(implementation = ValidationExceptionSchema.class))),
-            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = InternalServerErrorSchema.class)))
+            @ApiResponse(responseCode = "404", description = "Объект не найден", content = @Content(schema = @Schema(implementation = Http404Schema.class))),
     })
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public MusicBandReadSchema getMusicBand(@PathVariable Long id) {
         return musicBandService.getMusicBand(id);
@@ -82,12 +74,10 @@ public class MusicBandController {
             description = "Обновляет информацию о музыкальной группе"
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Returns an updated music band"),
-            @ApiResponse(responseCode = "400", description = "Invalid query param", content = @Content(schema = @Schema(implementation = BadRequestSchema.class))),
-            @ApiResponse(responseCode = "404", description = "Object not found", content = @Content(schema = @Schema(implementation = ObjectNotFoundSchema.class))),
-            @ApiResponse(responseCode = "422", description = "Validation error", content = @Content(schema = @Schema(implementation = ValidationExceptionSchema.class))),
-            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = InternalServerErrorSchema.class)))
+            @ApiResponse(responseCode = "404", description = "Объект не найден", content = @Content(schema = @Schema(implementation = Http404Schema.class))),
+            @ApiResponse(responseCode = "422", description = "Валидационная ошибка", content = @Content(schema = @Schema(implementation = Http422Schema.class))),
     })
+    @ResponseStatus(HttpStatus.OK)
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_XML_VALUE)
     public MusicBandReadSchema updateMusicBand(@PathVariable Long id, @RequestBody @Valid MusicBandUpdateSchema schema) {
         return musicBandService.updateMusicBand(id, schema);
@@ -95,39 +85,23 @@ public class MusicBandController {
 
     @Operation(summary = "Удаляет музыкальную группу")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "The music band was successfully deleted"),
-            @ApiResponse(responseCode = "400", description = "Invalid query param", content = @Content(schema = @Schema(implementation = BadRequestSchema.class))),
-            @ApiResponse(responseCode = "404", description = "Object not found", content = @Content(schema = @Schema(implementation = ObjectNotFoundSchema.class))),
-            @ApiResponse(responseCode = "422", description = "Validation error", content = @Content(schema = @Schema(implementation = ValidationExceptionSchema.class))),
-            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = InternalServerErrorSchema.class)))
+            @ApiResponse(responseCode = "404", description = "Объект не найден", content = @Content(schema = @Schema(implementation = Http404Schema.class)))
     })
+    @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/{id}")
     public void deleteMusicBand(@PathVariable Long id) {
         musicBandService.deleteMusicBand(id);
     }
 
-    @Operation(
-            summary = "Получить среднее количество участников для всех музыкальных групп"
-    )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Returns the average value of the number of participants"),
-            @ApiResponse(responseCode = "400", description = "Invalid query param", content = @Content(schema = @Schema(implementation = BadRequestSchema.class))),
-            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = InternalServerErrorSchema.class)))
-    })
+    @Operation(summary = "Получить среднее количество участников для всех музыкальных групп")
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/statistic")
     public StatisticSchema getStatistic() {
         return musicBandService.getStatistic();
     }
 
-    @Operation(
-            summary = "Получите количество повторений для каждого значения имени"
-    )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Returns list of numbers of each Name value"),
-            @ApiResponse(responseCode = "400", description = "Invalid query param", content = @Content(schema = @Schema(implementation = BadRequestSchema.class))),
-            @ApiResponse(responseCode = "422", description = "Validation error", content = @Content(schema = @Schema(implementation = ValidationExceptionSchema.class))),
-            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = InternalServerErrorSchema.class)))
-    })
+    @Operation(summary = "Получите количество повторений для каждого значения имени")
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/groups")
     public List<GroupSchema> getGroups() {
         return musicBandService.getGroups();

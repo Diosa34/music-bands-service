@@ -1,5 +1,6 @@
 package com.musicbands.musicbandsservice.services;
 
+import com.musicbands.musicbandsservice.exceptions.NotFoundException;
 import com.musicbands.musicbandsservice.models.Label;
 import com.musicbands.musicbandsservice.repositories.LabelRepository;
 import com.musicbands.musicbandsservice.schemas.label.LabelCreateSchema;
@@ -17,7 +18,7 @@ public class LabelService {
 
     public LabelReadSchema getLabel(Long labelId) {
         Label label = labelRepository.findById(labelId).orElseThrow(
-                () -> new RuntimeException("Not found") // todo: exception
+                () -> new NotFoundException(labelId, "Label")
         );
         return labelMapper.mapEntityToLabelRead(label);
     }
@@ -30,7 +31,7 @@ public class LabelService {
 
     public LabelReadSchema updateLabel(Long labelId, LabelUpdateSchema schema) {
         Label label = labelRepository.findById(labelId).orElseThrow(
-                () -> new RuntimeException("Not found") // todo: exception
+                () -> new NotFoundException(labelId, "Label")
         );
         labelMapper.mapUpdateSchemaToEntity(schema, label);
         label = labelRepository.save(label);

@@ -1,5 +1,6 @@
 package com.musicbands.musicbandsservice.services;
 
+import com.musicbands.musicbandsservice.exceptions.NotFoundException;
 import com.musicbands.musicbandsservice.models.Coordinates;
 import com.musicbands.musicbandsservice.repositories.CoordinatesRepository;
 import com.musicbands.musicbandsservice.schemas.coordinates.CoordinatesCreateSchema;
@@ -18,7 +19,7 @@ public class CoordinatesService {
 
     public CoordinatesReadSchema getCoordinates(Long id) {
         Coordinates coordinates = coordinatesRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Coordinates not found") // todo: insert exception
+                () -> new NotFoundException(id, "Coordinates")
         );
         return coordinatesMapper.mapEntityToCoordinatesRead(coordinates);
     }
@@ -31,7 +32,7 @@ public class CoordinatesService {
 
     public CoordinatesReadSchema updateCoordinates(Long id, CoordinatesUpdateSchema schema) {
         Coordinates coordinates = coordinatesRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Coordinates not found") // todo: insert exception
+                () -> new NotFoundException(id, "Coordinates")
         );
         coordinatesMapper.mapCoordinatesUpdateToEntity(schema, coordinates);
         coordinates = coordinatesRepository.save(coordinates);

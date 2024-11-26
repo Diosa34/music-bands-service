@@ -1,5 +1,6 @@
 package com.musicbands.musicbandsservice.services;
 
+import com.musicbands.musicbandsservice.exceptions.NotFoundException;
 import com.musicbands.musicbandsservice.models.MusicBand;
 import com.musicbands.musicbandsservice.repositories.CoordinatesRepository;
 import com.musicbands.musicbandsservice.repositories.LabelRepository;
@@ -46,14 +47,14 @@ public class MusicBandService {
 
     public MusicBandReadSchema getMusicBand(Long musicBandId) {
         MusicBand musicBand = musicBandRepository.findById(musicBandId).orElseThrow(
-                () -> new RuntimeException("d") // todo: exception
+                () -> new NotFoundException(musicBandId, "MusicBand")
         );
         return musicBandMapper.mapEntityToMusicBandRead(musicBand);
     }
 
     public MusicBandReadSchema updateMusicBand(Long musicBandId, MusicBandUpdateSchema schema) {
         MusicBand musicBand = musicBandRepository.findById(musicBandId).orElseThrow(
-                () -> new RuntimeException("d") // todo: exception
+                () -> new NotFoundException(musicBandId, "MusicBand")
         );
         musicBandMapper.mapMusicBandUpdateToEntity(schema, musicBand);
         labelRepository.save(musicBand.getLabel());
@@ -64,7 +65,7 @@ public class MusicBandService {
 
     public void deleteMusicBand(Long musicBandId) {
         MusicBand musicBand = musicBandRepository.findById(musicBandId).orElseThrow(
-                () -> new RuntimeException("d") // todo: exception
+                () -> new NotFoundException(musicBandId, "MusicBand")
         );
         musicBandRepository.delete(musicBand);
     }
