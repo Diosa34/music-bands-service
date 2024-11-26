@@ -11,6 +11,7 @@ import java.util.List;
 public class ListWithPaginatorSchema<T> { // todo: add swagger docs annotations
     @JacksonXmlElementWrapper(useWrapping = false)
     private List<T> elements;
-    private Long currentPage;
-    private Long totalPages;
+    private Integer elementsOnPage;
+    private Integer currentPage;
+    private Integer totalPages;
 }

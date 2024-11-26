@@ -6,6 +6,7 @@ import com.musicbands.musicbandsservice.schemas.exceptions.Http404Schema;
 import com.musicbands.musicbandsservice.schemas.exceptions.Http422Schema;
 import com.musicbands.musicbandsservice.schemas.lists.ListWithPaginatorSchema;
 import com.musicbands.musicbandsservice.schemas.musicBand.MusicBandCreateSchema;
+import com.musicbands.musicbandsservice.schemas.musicBand.MusicBandFilterSchema;
 import com.musicbands.musicbandsservice.schemas.musicBand.MusicBandReadSchema;
 import com.musicbands.musicbandsservice.schemas.musicBand.MusicBandUpdateSchema;
 import com.musicbands.musicbandsservice.services.MusicBandService;
@@ -17,6 +18,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
@@ -35,8 +37,8 @@ public class MusicBandController {
     @Operation(summary = "Список музыкальных групп")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public ListWithPaginatorSchema<MusicBandReadSchema> filterMusicBand() {
-        return musicBandService.filterMusicBand();
+    public ListWithPaginatorSchema<MusicBandReadSchema> filterMusicBand(@ParameterObject @Valid MusicBandFilterSchema filterSchema) {
+        return musicBandService.filterMusicBand(filterSchema);
     }
 
     @Operation(
