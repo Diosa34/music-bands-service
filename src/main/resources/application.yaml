@@ -15,13 +15,13 @@ spring:
 
     application:
         name: music-bands-service
-    cloud:
-        consul:
-            host: localhost
-            port: 8500
-            discovery:
-                health-check-tls-skip-verify: true
-                health-check-url: https://localhost:${server.port}/actuator/health
+#    cloud:
+#        consul:
+#            host: localhost
+#            port: 8500
+#            discovery:
+#                health-check-tls-skip-verify: true
+#                health-check-url: https://localhost:${server.port}/actuator/health
 
 springdoc:
     swagger-ui:
